@@ -1,172 +1,129 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/my_drawer_header.dart';
+import 'package:provider/provider.dart';
+import 'Item_provider.dart';
+import 'Items_provider.dart';
+import 'my_drawer_header.dart';
 
-void main() => 
-    runApp(const Endex(),
-    );
+void main() {
+  runApp(MyApp());
+}
 
-class Endex extends StatelessWidget {
-  const Endex({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home:Homepages(),
-      );
+    return ChangeNotifierProvider(
+      create: (_) => Items(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: ItemListScreen(),
+      ),
+    );
   }
-
 }
-class Homepages extends StatefulWidget {
-  const Homepages({super.key});
 
+class ItemListScreen extends StatelessWidget {
   @override
-  State<Homepages> createState() => _HomepagesState();
+  Widget build(BuildContext context) {
+    final itemsData = Provider.of<Items>(context);
+    final items = itemsData.items;
+
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0.0,
+        elevation: 19.0,
+        centerTitle: true,
+        title: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.data_object),
+              onPressed: () {},
+            ),
+            SizedBox(width: 30),
+            Container(
+              child: Text("List of items"),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+         
+          ),
+        ],
+      ),
+        drawer: MyHeaderDrawer(),
+    body: ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (ctx, index) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add spacing here
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ListTile(
+          leading: Image.network(items[index].imageUrl),
+          title: Text(items[index].name),
+          subtitle: Text('Price: \$${items[index].price.toStringAsFixed(2)}'),
+          trailing: IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {},
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ItemDetailScreen(item: items[index]),
+              ),
+            );
+          },
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+      ),
+    );
+  },
+),
+  floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            // Handle add button pressed
+          },
+        ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.centerDocked
+    );
+  }
 }
 
-class _HomepagesState extends State<Homepages> {
+class ItemDetailScreen extends StatelessWidget {
+  final Item item;
+
+  ItemDetailScreen({required this.item});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
-      
-          centerTitle: true,
-          title: Row(
-            children: [
-              Icon(
-                Icons.data_object_outlined,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Container(
-                child: Text("List of items"),
-              ),
-            ],
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed: () => {},
-            )
-          ],
-        ),
-       
-        body:ListView(
-      children: const <Widget>[
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.laptop,  color:Colors.black,size:40,),
-          
-            title: Text('Desktop',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),
-              ),
-            subtitle: Text('\$2000.0'),
-              trailing: Icon(Icons.edit),
-            
-          ),
-          
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.phone_android,  color:Colors.black,size:40),
-           
-            title: Text('Smart phone',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),
-              ),
-            subtitle: Text('\$1000.0'),
-              trailing: Icon(Icons.edit),
-            
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.cable,  color:Colors.black,size:40),
-          
-            title: Text('Cable',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),
-              ),
-            subtitle: Text('\$10.0'),
-              trailing: Icon(Icons.edit),
-            
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.mouse,  color:Colors.black,size:40),
-           
-            title: Text('Mouse',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),
-              ),
-            subtitle: Text('\$200.0'),
-              trailing: Icon(Icons.edit),
-            
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.smart_screen,  color:Colors.black,size:40),
-           
-            title: Text('Smart Screen',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),
-              ),
-            subtitle: Text('\$200.0'),
-              trailing: Icon(Icons.edit),
-           
-          )
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.tablet_android,  color:Colors.black,size:40),
-           
-            title: Text('Tablet',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),),
-            subtitle: Text('\$1000.0'),
-              trailing: Icon(Icons.edit),
-            
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.camera_alt,  color:Colors.black,size:40),
-           
-            title: Text('Camera' ,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),),
-            subtitle: Text('\$1000.0'),
-              trailing: Icon(Icons.edit),
-            
-          ),
-        ),
-      ],
-        ),
-
-
-        drawer: Drawer(
-          child: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                children: [
-                MyHeaderDrawer(),
-                ],
+      appBar: AppBar(
+        title: Text(item.name),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Image.network(item.imageUrl),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                item.description,
+                style: TextStyle(fontSize: 16),
               ),
             ),
-          ),
+          ],
         ),
-      );
-   
+      ),
+    );
   }
-  }
+}
